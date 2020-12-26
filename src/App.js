@@ -13,10 +13,14 @@ function App() {
     setSolving(true)
   }
 
+  const stopSolution = () => {
+    setSolving(false)
+  }
+
   return (
     <div className="App">
       <Header />
-      <Board isSolving={solving} />
+      <Board isSolving={solving} stopSolution={stopSolution} />
       <Choices />
       <Solve solve={solve} />
     </div>

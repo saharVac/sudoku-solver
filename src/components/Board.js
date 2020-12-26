@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import Row from "./Row";
 
-function Board({ isSolving }) {
+function Board({ isSolving, stopSolution }) {
 
     // const initialBoard = []
     // for (let i = 0; i < 9; i++) {
@@ -38,7 +38,8 @@ function Board({ isSolving }) {
         tilesToSolve: tilesToSolve
     });
 
-    console.log('empty tiles: ', tiles.tilesToSolve)
+    // showing current tiles
+    console.log("CURRENT TILES", tiles.values)
 
     // TODO: incorporate in actual state -->>
     const state = {
@@ -75,24 +76,45 @@ function Board({ isSolving }) {
             for (let j = boxCol * 3; j < (boxCol * 3) + 3; j++) {
                 // if the value already exists in the tile, return false
                 if (tiles.values[i][j] === value) {
-                    console.log('value', value, 'found at row:', i, 'column:', j)
                     return false
                 }
             }
         }
         
+        return true
+    }
+
+    const possVal = (row, col) => {
+        
+        return 0
     }
 
     const liveSolution = () => {
-        tiles.tilesToSolve.forEach(tile => {
-            // iterate over all digits
-            for (let testValue = 1; testValue <= 9; testValue++) {
-                // check if value is possible
-                if (isPossVal(tile.row, tile.col, testValue)) {
-                    
+        console.log('SOLVING')
+        // iterate over tiles to solve
+        for (let i = 0; i < tiles.tilesToSolve.length; i++) {
+            // destructure row and column of tile to solve
+            const { row, col } = tiles.tilesToSolve[i]
+            console.log("LOOKING AT TILE row:", row, "column:", col)
+            // if the tile isn't filled (i.e. the value is 0)
+            if (!tiles.values[row][col]) {
+                // if tile isn't filled
+                console.log('Solving tile', tiles.tilesToSolve[i])
+                // iterate over all digits
+                for (let testValue = 1; testValue <= 9; testValue++) {
+                    // if value is possible
+                    if (isPossVal(row, col, testValue)) {
+                        console.log('ASSIGNING TILE row', row, 'col', col, 'with', testValue)
+                        tiles.values[row][col] = testValue
+                        liveSolution()
+                    }
                 }
+                console.log("Considered all solutions")
+                stopSolution()
+                break
             }
-        })
+            
+        }
     }
 
     if (isSolving) {
