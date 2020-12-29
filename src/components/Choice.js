@@ -3,7 +3,7 @@ import React from "react";
 function Choice({ value }) {
 
     return (
-        <div class="choice">
+        <div className="choice">
             {value}
         </div>
     )

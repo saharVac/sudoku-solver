@@ -53,7 +53,7 @@ function Board({ isSolving, stopSolution }) {
 
     const board = []
     for (let i = 0; i < 9; i++) {
-        board.push(<Row rowNum={i} values={tiles.values[i]} tileClick={tileClick} />)
+        board.push(<Row key={i} rowNum={i} values={tiles.values[i]} tileClick={tileClick} />)
     }
 
     const isPossVal = (row, column, value) => {
