@@ -91,30 +91,9 @@ function Board({ isSolving, stopSolution }) {
 
     const liveSolution = () => {
         console.log('SOLVING')
-        // iterate over tiles to solve
-        for (let i = 0; i < tiles.tilesToSolve.length; i++) {
-            // destructure row and column of tile to solve
-            const { row, col } = tiles.tilesToSolve[i]
-            console.log("LOOKING AT TILE row:", row, "column:", col)
-            // if the tile isn't filled (i.e. the value is 0)
-            if (!tiles.values[row][col]) {
-                // if tile isn't filled
-                console.log('Solving tile', tiles.tilesToSolve[i])
-                // iterate over all digits
-                for (let testValue = 1; testValue <= 9; testValue++) {
-                    // if value is possible
-                    if (isPossVal(row, col, testValue)) {
-                        console.log('ASSIGNING TILE row', row, 'col', col, 'with', testValue)
-                        tiles.values[row][col] = testValue
-                        liveSolution()
-                    }
-                }
-                console.log("Considered all solutions for tile ROW", row, "COLUMN", col)
-                stopSolution()
-                break
-            }
-            
-        }
+        tiles.tilesToSolve.forEach(tile => {
+            console.log(tile)
+        })
     }
 
     if (isSolving) {
