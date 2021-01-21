@@ -109,7 +109,7 @@ function Board({ isSolving, stopSolution }) {
                         liveSolution()
                     }
                 }
-                console.log("Considered all solutions")
+                console.log("Considered all solutions for tile ROW", row, "COLUMN", col)
                 stopSolution()
                 break
             }
