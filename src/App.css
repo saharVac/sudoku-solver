@@ -32,12 +32,28 @@ body {
   height: calc(100% / 9);
 }
 
+.row-1 {
+  border-top: 3px solid black;
+}
+
 .row-3, .row-6 {
   border-bottom: 2px solid black;
 }
 
+.column-1 {
+  border-left: 3px solid black;
+}
+
 .column-3, .column-6 {
   border-right: 2px solid black;
+}
+
+.column-9 {
+  border-right: 3px solid black;
+}
+
+.row-9 {
+  border-bottom: 3px solid black;;
 }
 
 .cell {
