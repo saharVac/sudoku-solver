@@ -45,10 +45,10 @@ function App() {
 
   const changeCell = (value) => {
     let newBoard = board
-    console.log(newBoard)
+    console.log("click")
     newBoard[focusedCell.row][focusedCell.column] = value
     setBoard(newBoard)
-    // $("#cell-" + focusedCell.row + "-" + focusedCell.column).html(value)
+    $("#cell-" + focusedCell.row + "-" + focusedCell.column).html(value)
   }
 
   const clearValue = () => {
