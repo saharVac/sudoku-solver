@@ -11,8 +11,19 @@ body {
   margin: 0;
 }
 
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .title {
   text-align: center;
+}
+
+.instructions {
+  text-align: center;
+  font-size: 20px;
 }
 
  td {
@@ -89,4 +100,18 @@ body {
 
 .clear-btn {
   margin: auto;
+}
+
+.solve-section {
+  height: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+}
+
+.solve-btn {
+  width: 180px;
+  height: 50px;
+  font-size: 25px;
 }

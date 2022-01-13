@@ -97,17 +97,30 @@ function App() {
       })
     })
 
-    console.log("contradicting cell:", contradictingCell)
-    return isPoss
+    return [isPoss, contradictingCell]
+  }
+
+  const clearContradictingCellColor = (contradictingCell) => {
+    $("#cell-" + contradictingCell.row + "-" + contradictingCell.column).css("background-color", "")
   }
 
   const changeCell = (value) => {
     // check if possible to input value given the current values in cell's row column and cube
-    if (isValuePossible(value)) {
+    const [isPoss, contradictingCell] = isValuePossible(value)
+    if (isPoss) {
+
       let newBoard = board
       newBoard[focusedCell.row][focusedCell.column] = value
       setBoard(newBoard)
       $("#cell-" + focusedCell.row + "-" + focusedCell.column).html(value)
+
+    } else { // if not possible
+
+      // change background of contradicting cell to red
+      $("#cell-" + contradictingCell.row + "-" + contradictingCell.column).css("background-color", "red")
+      // undo contradicting cell color change after 1 second
+      console.log("contradicting cell:", contradictingCell)
+      setTimeout(clearContradictingCellColor, 1000, contradictingCell)
     }
   }
 
@@ -123,10 +136,19 @@ function App() {
     <div className="App">
 
       <h1 className="title">Sudoku Solver</h1>
+
+      <p className="instructions">
+        Click cells to update their values
+      </p>
       
       <Board focus={focus} board={board} />
 
       <ModificationSection clearValue={clearValue} changeCell={changeCell} />
+
+      <div className="solve-section">
+        <button className="solve-btn">SOLVE</button>
+      </div>
+      
 
     </div>
   );
