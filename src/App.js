@@ -45,13 +45,13 @@ function App() {
 
   }
 
-  const isValuePossible = (value) => {
+  const isValuePossible = (value, cell) => {
 
     // value is possible by default
     let isPoss = true
     let contradictingCell
-    const row = focusedCell.row
-    const column = focusedCell.column
+    const row = cell.row
+    const column = cell.column
 
     // check if value possible for focused cell's row
     // iterate over row values
@@ -106,7 +106,7 @@ function App() {
 
   const changeCell = (value) => {
     // check if possible to input value given the current values in cell's row column and cube
-    const [isPoss, contradictingCell] = isValuePossible(value)
+    const [isPoss, contradictingCell] = isValuePossible(value, focusedCell)
     if (isPoss) {
 
       let newBoard = board
@@ -132,6 +132,38 @@ function App() {
     $("#cell-" + focusedCell.row + "-" + focusedCell.column).html("")
   }
 
+  const solve = (boardToSolve) => {
+
+    console.log("board to solve", boardToSolve)
+
+    // iterate over board to solve
+    boardToSolve.forEach((rowToSolve, rowNum) => {
+      rowToSolve.forEach((valueToSolve, colNum) => {
+
+        // if cell already has nonzero value
+        if (valueToSolve) {
+
+          const cellToSolve = {
+            row: rowNum,
+            column: colNum
+          }
+
+          // iterate over all digits
+          [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(testVal => {
+            // if test value is possible
+            if (isValuePossible(testVal, cellToSolve)) {
+              // set boardToSolve cell to test value
+              boardToSolve[rowNum][colNum] = testVal
+              console.log("testing board:", boardToSolve)
+            }
+          })
+
+        }
+      })
+    })
+
+  }
+
   return (
     <div className="App">
 
@@ -146,7 +178,7 @@ function App() {
       <ModificationSection clearValue={clearValue} changeCell={changeCell} />
 
       <div className="solve-section">
-        <button className="solve-btn">SOLVE</button>
+        <button onClick={() => solve(board)} className="solve-btn">SOLVE</button>
       </div>
       
 
