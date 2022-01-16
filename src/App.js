@@ -139,24 +139,27 @@ function App() {
     // iterate over board to solve
     boardToSolve.forEach((rowToSolve, rowNum) => {
       rowToSolve.forEach((valueToSolve, colNum) => {
+        console.log("rowNum", rowNum)
+        console.log("colNum", colNum)
+        console.log("valueToSolve", valueToSolve)
 
-        // if cell already has nonzero value
-        if (valueToSolve) {
+        // if cell already has a zero value
+        if (!valueToSolve) {
 
           const cellToSolve = {
             row: rowNum,
             column: colNum
           }
 
-          // iterate over all digits
-          [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(testVal => {
-            // if test value is possible
-            if (isValuePossible(testVal, cellToSolve)) {
-              // set boardToSolve cell to test value
-              boardToSolve[rowNum][colNum] = testVal
-              console.log("testing board:", boardToSolve)
-            }
-          })
+          // iterate over all possible cell values
+
+          // set test value
+
+          // update possibility of cells affected in row, col and box
+
+          // if not possible, remove value from cell possibilities, update affected cells possibilities, try next possible values
+          
+          // if already iterated over all possibilities, return false
 
         }
       })
