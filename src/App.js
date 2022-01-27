@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 
 // TODO: create pop up alert when value not possible instead of using alert()
 
-
 function App() {
 
   const [board, setBoard] = useState([
@@ -22,6 +21,20 @@ function App() {
   ])
 
   const [focusedCell, setFocusedCell] = useState({})
+
+  const possList = []
+  for (let row = 1; row <= 9; row++) {
+    let rowToAdd = []
+    for (let col = 1; col <= 9; col++) {
+      let cellPossibilities = {}
+      for (let poss = 1; poss <= 9; poss++) {
+        cellPossibilities[poss] = true
+      }
+      rowToAdd.push(cellPossibilities)
+    }
+    possList.push(rowToAdd)
+  }
+  const [possibilities, setPossibilities] = useState(possList)
 
   const focus = (row, column) => {
 
@@ -104,6 +117,42 @@ function App() {
     $("#cell-" + contradictingCell.row + "-" + contradictingCell.column).css("background-color", "")
   }
 
+  const updatePossibilities = (row, col, val) => {
+
+    let newPossibilities = possibilities
+    
+    // update row's possibilities
+    for (let index = 0; index < 9; index++) {
+      // only if not on updated cell
+      if (index !== col) {
+        newPossibilities[row][index][val] = false
+      }
+    }
+
+    // update column's possibilities
+    for (let index = 0; index < 9; index++) {
+      // only if not on updated cell
+      if (index !== row) {
+        newPossibilities[index][col][val] = false
+      }
+    }
+
+    // update box's possibilities
+    const boxRows = (row > 5) ? [6, 7, 8] : (row > 2) ? [3, 4, 5] : [0, 1, 2]
+    const boxColumns = (col > 5) ? [6, 7, 8] : (col > 2) ? [3, 4, 5] : [0, 1, 2]
+    for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+      for (let colIndex = 0; colIndex < 3; colIndex++) {
+        // only if not on update cell
+        if (row !== boxRows[rowIndex] && col !== boxColumns[colIndex]) {
+          newPossibilities[boxRows[rowIndex]][boxColumns[colIndex]][val] = false
+        }
+      }
+    }
+
+    // set new possibilities
+    setPossibilities(newPossibilities)
+  }
+
   const changeCell = (value) => {
     // check if possible to input value given the current values in cell's row column and cube
     const [isPoss, contradictingCell] = isValuePossible(value, focusedCell)
@@ -114,18 +163,19 @@ function App() {
       setBoard(newBoard)
       $("#cell-" + focusedCell.row + "-" + focusedCell.column).html(value)
 
+      // change possibilities of affected cells in row, column, and box
+      updatePossibilities(focusedCell.row, focusedCell.column, value)
+
     } else { // if not possible
 
       // change background of contradicting cell to red
       $("#cell-" + contradictingCell.row + "-" + contradictingCell.column).css("background-color", "red")
       // undo contradicting cell color change after 1 second
-      console.log("contradicting cell:", contradictingCell)
       setTimeout(clearContradictingCellColor, 1000, contradictingCell)
     }
   }
 
   const clearValue = () => {
-    console.log("clearing value")
     let newBoard = board
     newBoard[focusedCell.row][focusedCell.column] = 0
     setBoard(newBoard)
@@ -134,14 +184,9 @@ function App() {
 
   const solve = (boardToSolve) => {
 
-    console.log("board to solve", boardToSolve)
-
     // iterate over board to solve
     boardToSolve.forEach((rowToSolve, rowNum) => {
       rowToSolve.forEach((valueToSolve, colNum) => {
-        console.log("rowNum", rowNum)
-        console.log("colNum", colNum)
-        console.log("valueToSolve", valueToSolve)
 
         // if cell already has a zero value
         if (!valueToSolve) {
