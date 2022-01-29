@@ -117,23 +117,21 @@ function App() {
     $("#cell-" + contradictingCell.row + "-" + contradictingCell.column).css("background-color", "")
   }
 
-  const updatePossibilities = (row, col, val) => {
+  const updatePossibilities = (row, col, val, isAddedValue) => {
 
     let newPossibilities = possibilities
     
     // update row's possibilities
     for (let index = 0; index < 9; index++) {
       // only if not on updated cell
-      if (index !== col) {
-        newPossibilities[row][index][val] = false
-      }
+      newPossibilities[row][index][val] = (index !== col) ? !isAddedValue : isAddedValue
     }
 
     // update column's possibilities
     for (let index = 0; index < 9; index++) {
       // only if not on updated cell
       if (index !== row) {
-        newPossibilities[index][col][val] = false
+        newPossibilities[index][col][val] = !isAddedValue
       }
     }
 
@@ -144,11 +142,11 @@ function App() {
       for (let colIndex = 0; colIndex < 3; colIndex++) {
         // only if not on update cell
         if (row !== boxRows[rowIndex] && col !== boxColumns[colIndex]) {
-          newPossibilities[boxRows[rowIndex]][boxColumns[colIndex]][val] = false
+          newPossibilities[boxRows[rowIndex]][boxColumns[colIndex]][val] = !isAddedValue
         }
       }
     }
-
+    
     // set new possibilities
     setPossibilities(newPossibilities)
   }
@@ -164,7 +162,7 @@ function App() {
       $("#cell-" + focusedCell.row + "-" + focusedCell.column).html(value)
 
       // change possibilities of affected cells in row, column, and box
-      updatePossibilities(focusedCell.row, focusedCell.column, value)
+      updatePossibilities(focusedCell.row, focusedCell.column, value, true)
 
     } else { // if not possible
 
@@ -177,9 +175,12 @@ function App() {
 
   const clearValue = () => {
     let newBoard = board
+    let oldValue = newBoard[focusedCell.row][focusedCell.column]
     newBoard[focusedCell.row][focusedCell.column] = 0
     setBoard(newBoard)
     $("#cell-" + focusedCell.row + "-" + focusedCell.column).html("")
+    // updated affected cell possibilities
+    updatePossibilities(focusedCell.row, focusedCell.column, oldValue, false)
   }
 
   const solve = (boardToSolve) => {
