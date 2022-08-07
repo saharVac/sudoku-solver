@@ -8,6 +8,8 @@ import React, { useState } from 'react';
 
 function App() {
 
+  let isFinished;
+
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -35,6 +37,8 @@ function App() {
     possList.push(rowToAdd)
   }
   const [possibilities, setPossibilities] = useState(possList)
+
+  const [possibilitiesSnapshots, setPossibilitiesSnapshots] = useState([])
 
   const focus = (row, column) => {
 
@@ -146,7 +150,6 @@ function App() {
         }
       }
     }
-    
     // set new possibilities
     setPossibilities(newPossibilities)
   }
@@ -156,6 +159,9 @@ function App() {
     const [isPoss, contradictingCell] = isValuePossible(value, focusedCell)
     if (isPoss) {
 
+      // store snapshot of current possibilities
+      setPossibilitiesSnapshots([...possibilitiesSnapshots, possibilities])
+
       let newBoard = board
       newBoard[focusedCell.row][focusedCell.column] = value
       setBoard(newBoard)
@@ -163,6 +169,8 @@ function App() {
 
       // change possibilities of affected cells in row, column, and box
       updatePossibilities(focusedCell.row, focusedCell.column, value, true)
+
+      
 
     } else { // if not possible
 
@@ -173,44 +181,42 @@ function App() {
     }
   }
 
-  const clearValue = () => {
+  const clearValue = () => { 
     let newBoard = board
     let oldValue = newBoard[focusedCell.row][focusedCell.column]
     newBoard[focusedCell.row][focusedCell.column] = 0
     setBoard(newBoard)
     $("#cell-" + focusedCell.row + "-" + focusedCell.column).html("")
-    // updated affected cell possibilities
+    // restore affected cell possibilities
+    // TODO: THIS DOESN'T ACCOUNT FOR other possibly conteradicting cells for what's set to now possible - needs to check if poss before changing to possible
     updatePossibilities(focusedCell.row, focusedCell.column, oldValue, false)
   }
 
   const solve = (boardToSolve) => {
 
-    // iterate over board to solve
-    boardToSolve.forEach((rowToSolve, rowNum) => {
-      rowToSolve.forEach((valueToSolve, colNum) => {
+    // iterating over each digit
+    for (let digit = 1; digit <= 9; digit++) {
+      // Check if digit can only be used in one cell in row or column
+      for (let index = 0; index <= 8; index++) {
+        let rowToCheck = [
+          boardToSolve[index][0], boardToSolve[index][1], boardToSolve[index][2],
+          boardToSolve[index][3], boardToSolve[index][4], boardToSolve[index][5],
+          boardToSolve[index][6], boardToSolve[index][7], boardToSolve[index][8]
+        ]
+        let colToCheck = [
+          boardToSolve[0][index], boardToSolve[1][index], boardToSolve[2][index],
+          boardToSolve[3][index], boardToSolve[4][index], boardToSolve[5][index],
+          boardToSolve[6][index], boardToSolve[7][index], boardToSolve[8][index]
+        ]
 
-        // if cell already has a zero value
-        if (!valueToSolve) {
+      }
+    }
 
-          const cellToSolve = {
-            row: rowNum,
-            column: colNum
-          }
 
-          // iterate over all possible cell values
 
-          // set test value
-
-          // update possibility of cells affected in row, col and box
-
-          // if not possible, remove value from cell possibilities, update affected cells possibilities, try next possible values
-          
-          // if already iterated over all possibilities, return false
-
-        }
-      })
-    })
-
+    // Check if digit can only be used in one cell in box
+    let digitPossibilitiesInBox = 0
+    
   }
 
   return (
@@ -227,7 +233,10 @@ function App() {
       <ModificationSection clearValue={clearValue} changeCell={changeCell} />
 
       <div className="solve-section">
-        <button onClick={() => solve(board)} className="solve-btn">SOLVE</button>
+        <button onClick={() => {
+          isFinished = false;
+          solve(board)
+        }} className="solve-btn">SOLVE</button>
       </div>
       
 

@@ -1,7 +1,9 @@
 import React from "react";
 import Option from './Option'
 
-function modificationSection({ changeCell, clearValue }) {
+function modificationSection({ changeCell, clearValue, focusedCell }) {
+    const fucusedRow = focusedCell.row 
+    const focusedCol = focusedCell.column
 
     return(
 
@@ -18,7 +20,8 @@ function modificationSection({ changeCell, clearValue }) {
                 <Option changeValue={() => changeCell(9)} value={9} />
             </div>
 
-            <button onClick={() => clearValue()} className="clear-btn">Clear Value</button>
+            {/* Hiding clear button until functionality accounts for updating possibilities properly for what should now be possible, regardless of order of cells cleared */}
+            {/* <button onClick={() => clearValue()} className="clear-btn">Clear Value</button> */}
         </div>
 
     )
