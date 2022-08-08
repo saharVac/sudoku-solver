@@ -11,15 +11,15 @@ function App() {
   let isFinished;
 
   const [board, setBoard] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [3, 1, 6, 5, 4, 0, 0, 0, 8],
+    [0, 0, 0, 6, 0, 3, 0, 2, 0],
+    [0, 0, 9, 0, 0, 0, 0, 3, 4],
+    [0, 0, 1, 0, 5, 6, 4, 0, 0],
+    [0, 4, 0, 9, 0, 1, 0, 6, 0],
+    [0, 0, 2, 4, 3, 0, 1, 0, 0],
+    [9, 7, 0, 0, 0, 0, 2, 0, 0],
+    [0, 2, 0, 8, 0, 9, 0, 0, 0],
+    [1, 0, 0, 0, 7, 5, 3, 4, 9],
   ])
 
   const [focusedCell, setFocusedCell] = useState({})
@@ -206,9 +206,24 @@ function App() {
     return occ
   }
 
+  const isNotSolved = () => {
+    // default to false
+    let notSolved = false
+    for (let row = 0; row < 9; row++) {
+      for (let column = 0; column < 9; column++) {
+        if (board[row][column] == 0) {
+          notSolved = true
+          break
+        }
+      }
+      if (notSolved) {
+        break
+      }
+    }
+    return notSolved
+  }
 
-  const solve = (boardToSolve) => {
-
+  const runAlgo = (boardToSolve) => {
     // iterating over each digit
     for (let digit = 1; digit <= 9; digit++) {
       console.log("scanning for digit ", digit)
@@ -284,10 +299,27 @@ function App() {
 
       
     }
-
     
+    // If there are any empty cells, iterate throguh all rows, columns, and boxes again
+    if (isNotSolved()) {
+      runAlgo(board)
+    }
+  }
 
-    
+
+  const solve = (boardToSolve) => {
+
+    // initialize possibilities
+    for (let row = 0; row < 9; row++) {
+      for (let column = 0; column < 9; column++) {
+        // if cell is filled
+        if (boardToSolve[row][column]) {
+          updatePossibilities(row, column, boardToSolve[row][column], true)
+        }
+      }
+    }
+
+    runAlgo(boardToSolve)
     
   }
 
