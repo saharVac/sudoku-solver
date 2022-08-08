@@ -20,8 +20,7 @@ function modificationSection({ changeCell, clearValue, focusedCell }) {
                 <Option changeValue={() => changeCell(fucusedRow, focusedCol, 9)} value={9} />
             </div>
 
-            {/* Hiding clear button until functionality accounts for updating possibilities properly for what should now be possible, regardless of order of cells cleared */}
-            {/* <button onClick={() => clearValue()} className="clear-btn">Clear Value</button> */}
+            <button onClick={() => clearValue()} className="clear-btn">Clear Value</button>
         </div>
 
     )
