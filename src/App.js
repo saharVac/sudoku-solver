@@ -62,13 +62,11 @@ function App() {
 
   }
 
-  const isValuePossible = (value, cell) => {
+  const isValuePossible = (row, col, value) => {
 
     // value is possible by default
     let isPoss = true
     let contradictingCell
-    const row = cell.row
-    const column = cell.column
 
     // check if value possible for focused cell's row
     // iterate over row values
@@ -86,13 +84,13 @@ function App() {
 
     // check if value possible for focused cell's column
     // iterate over column
-    let columnValues = [board[0][column], board[1][column], board[2][column], board[3][column], board[4][column], board[5][column], board[6][column], board[7][column], board[8][column]]
+    let columnValues = [board[0][col], board[1][col], board[2][col], board[3][col], board[4][col], board[5][col], board[6][col], board[7][col], board[8][col]]
     columnValues.forEach((cellValue, cellRow) => {
       // if value is found in column, value not possible
       if (parseInt(cellValue) === value) {
         contradictingCell = {
           row: cellRow,
-          column: column
+          column: col
         }
         isPoss = false
       }
@@ -100,7 +98,7 @@ function App() {
 
     // check if value possible for focused cell's box
     const boxRows = (row > 5) ? [6, 7, 8] : (row > 2) ? [3, 4, 5] : [0, 1, 2]
-    const boxColumns = (column > 5) ? [6, 7, 8] : (column > 2) ? [3, 4, 5] : [0, 1, 2]
+    const boxColumns = (col > 5) ? [6, 7, 8] : (col > 2) ? [3, 4, 5] : [0, 1, 2]
     boxRows.forEach(rowToCheck => {
       boxColumns.forEach(columnToCheck => {
         // if value is found in column, value not possible
@@ -124,6 +122,14 @@ function App() {
   const updatePossibilities = (row, col, val, isAddedValue) => {
 
     let newPossibilities = possibilities
+
+    // update changed cell's possibilities
+    for (let digit = 0; digit <= 9; digit++) {
+      // if not on set digit
+      if (digit != val) {
+        newPossibilities[row][col][digit] = false
+      }
+    }
     
     // update row's possibilities
     for (let index = 0; index < 9; index++) {
@@ -154,23 +160,21 @@ function App() {
     setPossibilities(newPossibilities)
   }
 
-  const changeCell = (value) => {
+  const changeCell = (row, column, value) => {
     // check if possible to input value given the current values in cell's row column and cube
-    const [isPoss, contradictingCell] = isValuePossible(value, focusedCell)
+    const [isPoss, contradictingCell] = isValuePossible(row, column, value)
     if (isPoss) {
 
       // store snapshot of current possibilities
       setPossibilitiesSnapshots([...possibilitiesSnapshots, possibilities])
 
       let newBoard = board
-      newBoard[focusedCell.row][focusedCell.column] = value
-      setBoard(newBoard)
-      $("#cell-" + focusedCell.row + "-" + focusedCell.column).html(value)
+      newBoard[row][column] = value
+      setBoard([...newBoard])
+      $("#cell-" + row + "-" + column).html(value)
 
       // change possibilities of affected cells in row, column, and box
-      updatePossibilities(focusedCell.row, focusedCell.column, value, true)
-
-      
+      updatePossibilities(row, column, value, true)
 
     } else { // if not possible
 
@@ -192,30 +196,98 @@ function App() {
     updatePossibilities(focusedCell.row, focusedCell.column, oldValue, false)
   }
 
+  const occurences = (arr, value) => {
+    let occ = []
+    for (let index = 0; index < arr.length; index++) {
+      if (arr[index] === value) {
+        occ.push(index)
+      }
+    }
+    return occ
+  }
+
+
   const solve = (boardToSolve) => {
 
     // iterating over each digit
     for (let digit = 1; digit <= 9; digit++) {
+      console.log("scanning for digit ", digit)
       // Check if digit can only be used in one cell in row or column
       for (let index = 0; index <= 8; index++) {
-        let rowToCheck = [
-          boardToSolve[index][0], boardToSolve[index][1], boardToSolve[index][2],
-          boardToSolve[index][3], boardToSolve[index][4], boardToSolve[index][5],
-          boardToSolve[index][6], boardToSolve[index][7], boardToSolve[index][8]
-        ]
-        let colToCheck = [
-          boardToSolve[0][index], boardToSolve[1][index], boardToSolve[2][index],
-          boardToSolve[3][index], boardToSolve[4][index], boardToSolve[5][index],
-          boardToSolve[6][index], boardToSolve[7][index], boardToSolve[8][index]
-        ]
+        // if digit is not in row
+        console.log("checking row,", index)
+        if (!boardToSolve[index].includes(digit)) {
+            let rowToCheck = [
+              possibilities[index][0][digit], possibilities[index][1][digit], possibilities[index][2][digit],
+              possibilities[index][3][digit], possibilities[index][4][digit], possibilities[index][5][digit],
+              possibilities[index][6][digit], possibilities[index][7][digit], possibilities[index][8][digit]
+            ]
+            let colToCheck = [
+              possibilities[0][index][digit], possibilities[1][index][digit], possibilities[2][index][digit],
+              possibilities[3][index][digit], possibilities[4][index][digit], possibilities[5][index][digit],
+              possibilities[6][index][digit], possibilities[7][index][digit], possibilities[8][index][digit]
+            ]
+  
+            let rowPossibilities = occurences(rowToCheck, true)
+            let colPossibilities = occurences(colToCheck, true)
 
+            console.log("rowPossibilities", rowPossibilities)
+            console.log("colPossibilities", colPossibilities)
+  
+            // if digit appears only once in row
+            if (rowPossibilities.length == 1) {
+              // update cell
+              let columnToUpdate = rowPossibilities[0]
+              console.log("Row ", rowToCheck, " has digit ", digit, " possible at only column ", columnToUpdate)
+              console.log("SETTING CELL [", index, "][", columnToUpdate, "] with value ", digit)
+              changeCell(index, columnToUpdate, digit)
+            }
+
+            // if digit appears only once in column
+            if (colPossibilities.length == 1) {
+              // update cell
+              let rowToUpdate = colPossibilities[0]
+              console.log("Column ", colToCheck, " has digit ", digit, " possible at only row ", rowToUpdate)
+              console.log("SETTING CELL [", rowToUpdate, "][", index, "] with value ", digit)
+              changeCell(rowToUpdate, index, digit)
+            }
+        }
       }
+
+      // Check if digit can only be used in one cell in box
+      const boxRows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+      const boxColumns = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+      for (let rowBoxIndex = 0; rowBoxIndex < 3; rowBoxIndex++) {
+        for (let colBoxIndex = 0; colBoxIndex < 3; colBoxIndex++) {      
+          let rows = boxRows[rowBoxIndex]
+          let columns = boxColumns[colBoxIndex]
+          let boxToCheck = [
+            possibilities[rows[0]][columns[0]][digit], possibilities[rows[0]][columns[1]][digit], possibilities[rows[0]][columns[2]][digit],
+            possibilities[rows[1]][columns[0]][digit], possibilities[rows[1]][columns[1]][digit], possibilities[rows[1]][columns[2]][digit],
+            possibilities[rows[2]][columns[0]][digit], possibilities[rows[2]][columns[1]][digit], possibilities[rows[2]][columns[2]][digit],
+          ]
+
+          let boxPossibilities = occurences(boxToCheck, true)
+          console.log("boxPossibilities", boxPossibilities)
+    
+              // if digit appears only once in row
+              if (boxPossibilities.length == 1) {
+                // update cell
+                let rowToUpdate = rows[Math.floor(boxPossibilities[0] / 3)]
+                let columnToUpdate = columns[boxPossibilities[0] % 3]
+                console.log("Row ", rowToUpdate, " has digit ", digit, " possible at only column ", columnToUpdate)
+                console.log("SETTING CELL [", rowToUpdate, "][", columnToUpdate, "] with value ", digit)
+                changeCell(rowToUpdate, columnToUpdate, digit)
+              }
+        }
+      }
+
+      
     }
 
+    
 
-
-    // Check if digit can only be used in one cell in box
-    let digitPossibilitiesInBox = 0
+    
     
   }
 
@@ -230,7 +302,7 @@ function App() {
       
       <Board focus={focus} board={board} />
 
-      <ModificationSection clearValue={clearValue} changeCell={changeCell} />
+      <ModificationSection clearValue={clearValue} changeCell={changeCell} focusedCell={focusedCell} />
 
       <div className="solve-section">
         <button onClick={() => {
