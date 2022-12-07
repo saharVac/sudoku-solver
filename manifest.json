@@ -3,7 +3,7 @@
   "name": "Create React App Sample",
   "icons": [
     {
-      "src": "https://thenounproject.com/api/private/icons/1049145/edit/?backgroundShape=SQUARE&backgroundShapeColor=%23000000&backgroundShapeOpacity=0&exportSize=752&flipX=false&flipY=false&foregroundColor=%23000000&foregroundOpacity=1&imageFormat=png&rotation=0&token=gAAAAABjkQEtsXRjNJ_nsYbsHn-oTJpr0REZY5Gtx7rO_OVS-KxAAVfrU9Zxesp6kf9Z7JHnfbsgFxFmvY9eXf747TWuqn84ZQ%3D%3D",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }
