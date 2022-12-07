@@ -3,6 +3,7 @@
 }
 
 html, body, #root, .App {
+  min-width: 300px;
   width: 100%;
   height: 100%;
 }
@@ -33,6 +34,10 @@ body {
 .board {
   width: 90vw;
   height: 90vw;
+  max-width: 600px;
+  min-width: 350px;
+  max-height: 600px;
+  min-height: 350px;
   margin: auto;
   border-collapse: collapse;
 }
@@ -82,6 +87,7 @@ body {
 
 .modification-options {
   width: 90%;
+  max-width: 800px;
   margin: auto;
   margin-top: 30px;
   margin-bottom: 10px;
@@ -90,8 +96,12 @@ body {
 }
 
 .option {
-  width: 10%;
-  height: 30px;
+  width: 7vw;
+  min-width: 30px;
+  max-width: 50px;
+  height: 7vw;
+  min-height: 30px;
+  max-height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,6 +110,8 @@ body {
 
 .clear-btn {
   margin: auto;
+  width: 150px;
+  font-size: 18px;
 }
 
 .solve-section {
@@ -115,3 +127,4 @@ body {
   height: 50px;
   font-size: 25px;
 }
+

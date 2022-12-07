@@ -4,7 +4,7 @@ import Board from './Components/Board'
 import ModificationSection from './Components/ModificationSection'
 import React, { useState } from 'react';
 
-// TODO: create pop up alert when value not possible instead of using alert()
+// TODO: Declare when board wasn't solvable and allow to clear board
 
 function App() {
 
@@ -13,15 +13,15 @@ function App() {
   let isFinished;
 
   const [board, setBoard] = useState([
-    [3, 1, 6, 5, 4, 0, 0, 0, 8],
-    [0, 0, 0, 6, 0, 3, 0, 2, 0],
-    [0, 0, 9, 0, 0, 0, 0, 3, 4],
-    [0, 0, 1, 0, 5, 6, 4, 0, 0],
-    [0, 4, 0, 9, 0, 1, 0, 6, 0],
-    [0, 0, 2, 4, 3, 0, 1, 0, 0],
-    [9, 7, 0, 0, 0, 0, 2, 0, 0],
-    [0, 2, 0, 8, 0, 9, 0, 0, 0],
-    [1, 0, 0, 0, 7, 5, 3, 4, 9],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ])
 
   const [focusedCell, setFocusedCell] = useState({})
@@ -349,6 +349,8 @@ function App() {
     }
 
     let solvable = runAlgo(boardToSolve)
+
+    console.log("done")
     
   }
 
