@@ -96,10 +96,10 @@ body {
 }
 
 .option {
-  width: 7vw;
+  width: 6vw;
   min-width: 30px;
   max-width: 50px;
-  height: 7vw;
+  height: 6vw;
   min-height: 30px;
   max-height: 50px;
   display: flex;
